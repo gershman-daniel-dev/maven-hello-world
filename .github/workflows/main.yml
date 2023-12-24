@@ -54,7 +54,7 @@ jobs:
       - name: Run Tests
         run: |
           cd myapp
-          mvn test
+          mvn -B test
 
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
