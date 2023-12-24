@@ -60,6 +60,6 @@ jobs:
           DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          docker build -t myapp:$VERSION .
-          docker tag myapp:$VERSION $DOCKER_HUB_USERNAME/myapp:$VERSION
-          docker push $DOCKER_HUB_USERNAME/myapp:$VERSION
+          docker build -t myapp:$NEW_VERSION .
+          docker tag myapp:$NEW_VERSION $DOCKER_HUB_USERNAME/myapp:$NEW_VERSION
+          docker push $DOCKER_HUB_USERNAME/myapp:$NEW_VERSION
