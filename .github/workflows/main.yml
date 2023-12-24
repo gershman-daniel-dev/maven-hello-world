@@ -20,6 +20,7 @@ jobs:
 
       - name: Increment Version
         run: |
+          cd myapp
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
