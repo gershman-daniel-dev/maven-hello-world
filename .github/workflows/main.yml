@@ -8,8 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: dev
-    outputs:
-      new_version: ${{ steps.versioning.outputs.new_version }}
 
     steps:
       - name: Check out repository
@@ -22,6 +20,7 @@ jobs:
           distribution: "adopt"
 
       - name: Increment Version
+        id: versioning
         run: |
           cd myapp
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -29,7 +28,6 @@ jobs:
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
 
-          # Increment the project version
           if [ $PATCH -eq 9 ]; then
             PATCH=0
             if [ $MINOR -eq 9 ]; then
@@ -43,12 +41,14 @@ jobs:
           fi
 
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-
           mvn versions:set -DnewVersion=$NEW_VERSION
-          git config --local user.email "GitHub Actions"
-          git config --local user.name "GitHub Actions"
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pom.xml
           git commit -am "Increment version to $NEW_VERSION"
           git push
+
           echo "::set-output name=new_version::$NEW_VERSION"
 
       - name: Login to Docker Hub
@@ -58,10 +58,8 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build and Push Docker Image
-        env:
-          NEW_VERSION: ${{ needs.build.outputs.new_version }}
         run: |
-          echo !!!!!!!!!!!!!!!!!!!!!!-$NEW_VERSION
-          docker build -t myapp:$NEW_VERSION .
-          docker tag myapp:$NEW_VERSION $DOCKER_HUB_USERNAME/myapp:$NEW_VERSION
-          docker push $DOCKER_HUB_USERNAME/myapp:$NEW_VERSION
+          echo "Version: ${{ steps.versioning.outputs.new_version }}"
+          docker build -t myapp:${{ steps.versioning.outputs.new_version }} .
+          docker tag myapp:${{ steps.versioning.outputs.new_version }} $DOCKER_HUB_USERNAME/myapp:${{ steps.versioning.outputs.new_version }}
+          docker push $DOCKER_HUB_USERNAME/myapp:${{ steps.versioning.outputs.new_version }}
