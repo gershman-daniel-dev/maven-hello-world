@@ -7,5 +7,5 @@ RUN mvn package
 # Second stage: Setup the runtime environment with JDK 13
 FROM openjdk:13-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/target/myapp-1.0-SNAPSHOT.jar /app/myapp.jar
+COPY --from=build /app/target/*.jar /app/myapp.jar
 CMD ["java", "-jar", "myapp.jar"]
