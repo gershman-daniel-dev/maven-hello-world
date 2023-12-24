@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  Build_and_Push:
     runs-on: ubuntu-latest
     environment: dev
 
