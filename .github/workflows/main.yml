@@ -51,6 +51,11 @@ jobs:
 
           echo "::set-output name=new_version::$NEW_VERSION"
 
+      - name: Run Tests
+        run: |
+          cd myapp
+          mvn test
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
