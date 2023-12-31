@@ -41,7 +41,7 @@ jobs:
           fi
 
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          mvn versions:set -DnewVersion=$NEW_VERSION
+          mvn -B versions:set -DnewVersion=$NEW_VERSION
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
